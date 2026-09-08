@@ -1,0 +1,8 @@
+<?php
+// Nexus Edge - legacy DB config (backup) - remove before deploy
+define('DB_HOST', 'db.internal.nexus.local');
+define('DB_NAME', 'nexus_legacy');
+define('DB_USER', 'root');
+define('DB_PASS', 'Adm1n-Legacy-2026');            // old root password, still valid on staging
+define('ADMIN_RECOVERY_TOKEN', 'IAW301{backup_config_db_password_exposed}');
+?>

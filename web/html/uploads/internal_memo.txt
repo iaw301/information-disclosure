@@ -1,0 +1,12 @@
+INTERNAL MEMO - Nexus Core IT Operations
+Date: 2026-08-12
+Classification: INTERNAL ONLY
+
+Subject: Edge perimeter clean-up before go-live
+
+- Remove /server-status, /phpinfo.php, and directory listing on /uploads/ and /backup/.
+- Rotate the DB password leaked in the old config backup.
+- Purge the .git folder from the deployed web root.
+- Decommission the legacy admin panel (/legacy/old_admin_login.html).
+
+Ops verification token: IAW301{directory_listing_leaked_internal_memo}

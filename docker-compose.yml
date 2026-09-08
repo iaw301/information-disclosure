@@ -1,0 +1,39 @@
+services:
+  web:
+    build: ./web
+    container_name: recon_web
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  api:
+    build: ./api
+    container_name: recon_api
+    ports:
+      - "${API_PORT:-8000}:8000"
+    restart: unless-stopped
+
+  ftp:
+    build: ./ftp
+    container_name: recon_ftp
+    ports:
+      - "${FTP_PORT:-21}:21"
+      - "21100-21110:21100-21110"      # passive range
+    restart: unless-stopped
+
+  banners:
+    build: ./banners
+    container_name: recon_banners
+    ports:
+      - "${SSH_PORT:-2222}:2222"
+      - "${SMTP_PORT:-2525}:2525"
+    restart: unless-stopped
+
+  redis:
+    build: ./redis
+    container_name: recon_redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    restart: unless-stopped

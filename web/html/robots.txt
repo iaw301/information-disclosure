@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /backup/
+Disallow: /uploads/
+Disallow: /server-status
+Disallow: /.git/
+Disallow: /internal-api/
+# note: /robots.txt tu no la ban do trinh sat -> IAW301{robots_txt_recon_roadmap}

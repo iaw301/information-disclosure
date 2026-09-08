@@ -1,0 +1,6 @@
+id,name,email,department,username
+1,Alice Nguyen,a.nguyen@nexus-core.local,Engineering,a.nguyen
+2,John Smith,j.smith@nexus-core.local,Finance,j.smith
+3,Maria Garcia,m.garcia@nexus-core.local,HR,m.garcia
+4,Backup Service,backup@nexus-core.local,IT,backup_svc
+5,System Admin,admin@nexus-core.local,IT,admin
