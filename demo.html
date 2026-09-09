@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus Recon Range — Demo</title>
+<style>
+  :root{
+    --bg:#0b1220; --panel:#111a2e; --border:#22304d; --text:#e6edf7; --muted:#93a3bd;
+    --cyan:#38bdf8; --cyan2:#0ea5e9; --green:#22c55e; --amber:#f59e0b; --red:#ef4444;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:radial-gradient(1200px 600px at 70% -10%,#16233f 0%,var(--bg) 55%);
+    color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    overflow:hidden}
+  #deck{height:100vh;display:flex;flex-direction:column}
+  header.bar{display:flex;align-items:center;justify-content:space-between;
+    padding:12px 26px;border-bottom:1px solid var(--border);font-size:.85rem;color:var(--muted)}
+  header.bar .logo{color:var(--cyan);font-weight:700;letter-spacing:.04em}
+  #progress{height:3px;background:var(--cyan2);width:0;transition:width .25s}
+  main{flex:1;position:relative;overflow:hidden}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;
+    padding:40px min(9vw,110px);animation:fade .35s ease}
+  .slide.active{display:flex}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .kicker{color:var(--cyan);font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    font-size:.8rem;margin-bottom:10px}
+  h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.08;margin:.2rem 0}
+  h2{font-size:clamp(1.5rem,3.4vw,2.3rem);margin:.2rem 0 1rem}
+  p.lead{color:var(--muted);font-size:clamp(1rem,1.6vw,1.25rem);max-width:70ch}
+  ul{margin:.6rem 0;padding-left:1.2rem;line-height:1.7;max-width:80ch}
+  ul li{margin:.15rem 0}
+  .say{color:var(--muted)} .say b{color:var(--text)}
+  code,pre{font-family:var(--mono)}
+  pre.cmd{background:#060b16;border:1px solid var(--border);border-left:3px solid var(--cyan);
+    border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:clamp(.85rem,1.3vw,1rem);
+    color:#cbe7ff;margin:.8rem 0}
+  pre.cmd .c{color:#5b6b86}          /* comment */
+  .pill{display:inline-block;background:#052e1a;color:#86efac;border:1px solid #14532d;
+    border-radius:999px;padding:3px 12px;font-family:var(--mono);font-size:.85rem;margin:3px 4px 0 0}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px}
+  .card h3{margin:0 0 .4rem;font-size:1.05rem;color:var(--cyan)}
+  .tag{font-family:var(--mono);font-size:.8rem;color:var(--amber)}
+  .big{font-size:clamp(1.1rem,2vw,1.5rem)}
+  .center{align-items:center;text-align:center}
+  .chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:clamp(.9rem,1.5vw,1.15rem);margin-top:10px}
+  .chain .step{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 12px}
+  .chain .arrow{color:var(--cyan)}
+  footer.bar{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 26px;border-top:1px solid var(--border);font-size:.8rem;color:var(--muted)}
+  kbd{background:#0b1424;border:1px solid var(--border);border-bottom-width:2px;border-radius:5px;
+    padding:1px 7px;font-family:var(--mono);font-size:.8rem;color:var(--text)}
+  .warn{color:var(--amber)} .danger{color:var(--red)}
+</style>
+</head>
+<body>
+<div id="deck">
+  <header class="bar">
+    <span class="logo">NEXUS RECON RANGE</span>
+    <span>Kịch bản demo — Trinh sát &amp; Lộ lọt Thông tin</span>
+  </header>
+  <div id="progress"></div>
+  <main id="slides">
+
+    <!-- 1 -->
+    <section class="slide active center">
+      <div class="kicker">Information Disclosure · Recon</div>
+      <h1>Nexus Recon Range</h1>
+      <p class="lead">Một mục tiêu, nhiều dịch vụ để hở — trinh sát end-to-end bằng
+        <b>nmap · ffuf/feroxbuster · git-dumper · redis-cli · FTP</b>.</p>
+      <p class="say" style="margin-top:18px">Nhấn <kbd>→</kbd> để bắt đầu · <kbd>F</kbd> toàn màn hình</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide">
+      <div class="kicker">Kịch bản</div>
+      <h2>Bối cảnh &amp; luật chơi</h2>
+      <ul class="say">
+        <li><b>Vai:</b> pentester, được cấp host <code>nexus-edge</code> (black-box, không có source).</li>
+        <li><b>Mục tiêu:</b> trinh sát toàn diện, thu thập các marker <span class="pill">IAW301{...}</span> (~17 mục).</li>
+        <li><b>Luật:</b> <b>thỏa sức nã tool</b> — không rate-limit, không WAF, không ban. Bẩn thì reset một nốt.</li>
+      </ul>
+      <p class="say"><span class="warn">Người trình bày:</span> nhấn mạnh — đây là <b>range luyện tập</b>, không phải môi trường thật; mọi credential là giả.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide">
+      <div class="kicker">Setup (một dòng)</div>
+      <h2>Khởi động mục tiêu</h2>
+      <pre class="cmd"><span class="c"># A. Đầy đủ (máy có Docker)</span>
+docker compose up -d --build        <span class="c"># 5 dịch vụ: web, api, ftp, redis, banners</span>
+
+<span class="c"># C. Không Docker (chỉ phần web) — sinh viên thiếu Docker</span>
+python serve_nodocker.py            <span class="c"># http://localhost:8080</span></pre>
+      <p class="say"><b>Chế độ B (khuyến nghị lớp học):</b> giáo viên host <b>1 instance</b>, cả lớp chĩa tool vào <code>host:port</code> — không ai cần Docker.</p>
+    </section>
+
+    <!-- 3b · Bộ công cụ -->
+    <section class="slide">
+      <div class="kicker">Chuẩn bị · Bộ công cụ</div>
+      <h2>Cần cài những gì</h2>
+      <div class="grid">
+        <div class="card"><h3>nmap</h3><span class="say">quét cổng/dịch vụ + NSE (<code>http-git</code>, <code>ftp-anon</code>, <code>http-enum</code>)</span></div>
+        <div class="card"><h3>ffuf / feroxbuster</h3><span class="say">content discovery — cần wordlist <b>SecLists</b> (<code>/usr/share/seclists</code>)</span></div>
+        <div class="card"><h3>git-dumper</h3><span class="say">khôi phục source từ <code>/.git</code> để hở</span></div>
+        <div class="card"><h3>redis-cli · ftp · curl</h3><span class="say">chọc dịch vụ không xác thực (Redis / FTP anonymous)</span></div>
+        <div class="card"><h3>Trình duyệt + DevTools</h3><span class="say">view-source, <code>console.log</code>, <b>source map</b> <code>.js.map</code></span></div>
+        <div class="card"><h3>jq · crack MD5</h3><span class="say">đọc JSON/source map; crack hash từ <code>db.sql</code> (CrackStation / hashcat)</span></div>
+      </div>
+      <pre class="cmd"><span class="c"># Kali/Debian - cai mot phat</span>
+sudo apt install -y nmap ffuf feroxbuster seclists redis-tools ftp jq
+pipx install git-dumper        <span class="c"># hoac: pip install git-dumper</span></pre>
+    </section>
+
+    <!-- 4 -->
+    <section class="slide">
+      <div class="kicker">Bước 1 · nmap</div>
+      <h2>Quét cổng &amp; dịch vụ</h2>
+      <pre class="cmd">nmap -sV -sC -p- --min-rate 2000 &lt;host&gt;</pre>
+      <p class="say">Thấy <b>nhiều dịch vụ trên nhiều cổng</b> — không chỉ một web app:</p>
+      <div>
+        <span class="pill">80/8080 nginx <span class="tag">1.18.0</span></span>
+        <span class="pill">21 ftp <span class="tag">vsftpd 2.3.4 · anon</span></span>
+        <span class="pill">2222 ssh <span class="tag">OpenSSH 7.2p2</span></span>
+        <span class="pill">2525 smtp <span class="tag">Postfix</span></span>
+        <span class="pill">6379 redis <span class="tag">no-auth</span></span>
+      </div>
+      <p class="say" style="margin-top:14px"><b>Chốt:</b> banner phiên bản <span class="warn">cũ</span> → tra CVE ngay; <code>ftp-anon</code>, <code>redis</code> mở toang.</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="slide">
+      <div class="kicker">Bước 2 · ffuf / feroxbuster</div>
+      <h2>Fuzz thư mục &amp; file</h2>
+      <pre class="cmd">ffuf -u http://&lt;host&gt;:8080/FUZZ -w raft-medium-files.txt \
+     -e .bak,.old,.zip,.sql,.env -mc 200,301,403 -t 100</pre>
+      <div class="grid">
+        <div class="card"><h3>200 — thấy ngay</h3>
+          <code>/.env · /config.php.bak · /db.sql · /backup.zip · /phpinfo.php · /robots.txt · /uploads/</code></div>
+        <div class="card"><h3>403 — TỒN TẠI (≠ 404)</h3>
+          <code>/admin/</code> · <span class="say">endpoint có thật, chỉ bị chặn listing → đừng bỏ qua!</span></div>
+      </div>
+      <p class="say" style="margin-top:12px"><b>Chốt:</b> lọc theo status-code (<code>-mc/-fc/-fs</code>) là kỹ năng cốt lõi.</p>
+    </section>
+
+    <!-- 5b · Source map -->
+    <section class="slide">
+      <div class="kicker">Bước 2b · Source map</div>
+      <h2>JS minified → lộ source gốc</h2>
+      <p class="say">Trang chủ nạp <code>/assets/app.min.js</code>; cuối file có
+        <code>//# sourceMappingURL=app.min.js.map</code> (thấy qua <b>View Source</b> / tab Sources của DevTools).</p>
+      <pre class="cmd">curl -s http://&lt;host&gt;:8080/assets/app.min.js.map | jq -r '.sourcesContent[]'</pre>
+      <p class="say"><code>sourcesContent</code> chứa nguyên source <b>chưa minify</b> — lộ token build hardcode:</p>
+      <div><span class="pill">IAW301{source_map_leaks_original_source_and_secret}</span></div>
+      <p class="say" style="margin-top:12px"><span class="warn">Bài học:</span> <b>strip sourcemap</b> trước khi deploy; đừng inline secret vào bundle frontend.</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="slide">
+      <div class="kicker">Bước 3 · git-dumper — điểm nhấn</div>
+      <h2>/.git để hở → khôi phục source</h2>
+      <pre class="cmd">git-dumper http://&lt;host&gt;:8080/.git/ ./loot
+cd loot &amp;&amp; git log --all -p | grep -i secret</pre>
+      <p class="say">Khôi phục nguyên repo. <b>git log</b> lộ file <code>config.py</code> đã bị <span class="warn">"xoá"</span> ở commit mới —
+        nhưng vẫn nằm trong history:</p>
+      <div><span class="pill">IAW301{git_history_leaked_hardcoded_secret}</span>
+        <span class="pill">DB_PASS = S3cr3t-DB-Pass-2026!</span></div>
+      <p class="say" style="margin-top:12px"><span class="warn">Bài học đắt:</span> "xoá secret rồi commit lại" <b>không</b> xoá khỏi lịch sử git.</p>
+    </section>
+
+    <!-- 7 -->
+    <section class="slide">
+      <div class="kicker">Bước 4 · Dịch vụ không xác thực</div>
+      <h2>Redis &amp; FTP mở toang</h2>
+      <pre class="cmd"><span class="c"># Redis không mật khẩu</span>
+redis-cli -h &lt;host&gt; -p 6379 KEYS '*'
+redis-cli -h &lt;host&gt; -p 6379 GET session:admin:token
+
+<span class="c"># FTP anonymous</span>
+curl ftp://&lt;host&gt;:21/backup/credentials.txt</pre>
+      <div>
+        <span class="pill">IAW301{unauthenticated_redis_exposed_key}</span>
+        <span class="pill">IAW301{anonymous_ftp_readable_backup_credentials}</span>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section class="slide">
+      <div class="kicker">Bước 5 · Ghép chuỗi</div>
+      <h2>Rò rỉ nhỏ → chiếm quyền</h2>
+      <p class="say">Từng mẩu "vô hại", ghép lại thành đường vào thật:</p>
+      <div class="chain">
+        <span class="step"><code>/db.sql</code><br><span class="say">MD5 không salt</span></span>
+        <span class="arrow">→</span>
+        <span class="step">CrackStation<br><span class="say">admin / password / 123456</span></span>
+        <span class="arrow">→</span>
+        <span class="step">tái sử dụng mật khẩu</span>
+      </div>
+      <div class="chain">
+        <span class="step"><code>employee_directory.csv</code><br><span class="say">danh sách email</span></span>
+        <span class="arrow">→</span>
+        <span class="step">Password Spraying</span>
+        <span class="arrow">→</span>
+        <span class="step big">Chuyên đề Authentication</span>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section class="slide">
+      <div class="kicker">Phòng thủ</div>
+      <h2>Remediation</h2>
+      <ul>
+        <li>Tắt <b>banner/version</b> (<code>server_tokens off</code>), <b>autoindex</b>, <code>/server-status</code>, <code>phpinfo</code>.</li>
+        <li>Chặn <b>dotfiles &amp; <code>/.git</code></b> ở web server; CI/CD chỉ deploy artifact sạch (không <code>.git</code>).</li>
+        <li>Gỡ <code>.env</code>/backup/dump khỏi web root; <b>rotate</b> secret đã lộ trong lịch sử git.</li>
+        <li>Bắt buộc <b>xác thực</b> Redis/FTP; cập nhật phiên bản dịch vụ.</li>
+      </ul>
+    </section>
+
+    <!-- 10 -->
+    <section class="slide center">
+      <div class="kicker">Tổng kết</div>
+      <h1>Chịu đấm · Reset 1 nốt</h1>
+      <p class="lead">Không rate-limit/WAF → tool chạy hết công suất. Bẩn state →
+        <code>docker compose down &amp;&amp; up</code>. Ba chế độ chạy (Docker / target chung / no-Docker).</p>
+      <div style="margin-top:16px">
+        <span class="pill">nmap</span><span class="pill">ffuf / feroxbuster</span>
+        <span class="pill">git-dumper</span><span class="pill">redis-cli</span><span class="pill">FTP</span>
+        <span class="pill">jq</span><span class="pill">DevTools</span>
+      </div>
+    </section>
+
+  </main>
+  <footer class="bar">
+    <span>← / → điều hướng · <kbd>F</kbd> fullscreen</span>
+    <span id="counter">1 / 10</span>
+  </footer>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let i = 0;
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  function show(n){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    counter.textContent = (i + 1) + ' / ' + slides.length;
+    progress.style.width = ((i) / (slides.length - 1) * 100) + '%';
+  }
+  function next(){ show(i + 1); }
+  function prev(){ show(i - 1); }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    }
+  });
+  document.getElementById('slides').addEventListener('click', e => {
+    // click nửa phải -> next, nửa trái -> prev
+    (e.clientX > window.innerWidth / 2) ? next() : prev();
+  });
+  show(0);
+</script>
+</body>
+</html>
