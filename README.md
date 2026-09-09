@@ -57,7 +57,7 @@ Swagger + `/server-status` + banner qua header. Các dịch vụ cho nmap (FTP/R
 ## 1. Nhiệm vụ (cho sinh viên — Black-box)
 
 > Bạn được cấp host `nexus-edge`. Hãy **trinh sát toàn diện**: quét cổng & dịch vụ, fuzz
-> thư mục/file, khai thác cấu hình sai và file để lộ. Mục tiêu: thu **~16 marker `IAW301{...}`**.
+> thư mục/file, khai thác cấu hình sai và file để lộ. Mục tiêu: thu **~17 marker `IAW301{...}`**.
 
 ### Bộ công cụ (đủ cho chủ đề này)
 
@@ -110,6 +110,7 @@ curl ftp://<host>:21/backup/credentials.txt
 | 14 | Anonymous FTP | `ftp` anon → `/backup/credentials.txt` | `anonymous_ftp_readable_backup_credentials` | **A,B** |
 | 15 | Redis no-auth | `redis-cli … GET session:admin:token` | `unauthenticated_redis_exposed_key` | **A,B** |
 | 16 | SSH/SMTP version cũ | `nmap -sV -p 2222,2525` | *(→ tra CVE)* | **A,B** |
+| 17 | Source map để hở | `/assets/app.min.js` → `sourceMappingURL` → `.js.map` (`sourcesContent`) | `source_map_leaks_original_source_and_secret` | A,B,C |
 
 **Dây chuyền dạy học:** `db.sql` (MD5 không salt) → crack ra mật khẩu → tái sử dụng;
 `employee_directory.csv` (email) → phục vụ password spraying → **nối sang chuyên đề Authentication**.

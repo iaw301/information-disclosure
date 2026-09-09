@@ -90,7 +90,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     extensions_map = {
         **http.server.SimpleHTTPRequestHandler.extensions_map,
         ".php": "text/html", ".env": "text/plain", ".bak": "text/plain",
-        ".sql": "text/plain", "": "application/octet-stream",
+        ".sql": "text/plain", ".js": "application/javascript",
+        ".map": "application/json", "": "application/octet-stream",
     }
 
     def end_headers(self):
